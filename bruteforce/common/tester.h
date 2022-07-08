@@ -92,7 +92,7 @@ void run_speed_tests(T tester, int iterations)
 		auto start = clock::now();
 		tester.run_iterations(test_data,&rng_seed,i,iterations);
 		auto end = clock::now();
-		std::cout << duration_cast<microseconds>(end-start).count() << "\n";
+		std::cout << duration_cast<std::chrono::duration<double>>(end-start).count() << "s\n";
 	}
 }
 

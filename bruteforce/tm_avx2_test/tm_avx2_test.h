@@ -27,4 +27,4 @@ public:
 
 };
 
-#endif //TM_AVX2_INTRINSICS2_TEST_H
+#endif //TM_AVX2_INTRINSICS_TEST_H
