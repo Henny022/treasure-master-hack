@@ -13,11 +13,11 @@ public:
     uint16 * rng_table;
     uint16 rng_seed;
 
-    uint16 * regular_rng_values;
+    uint8 * regular_rng_values;
 
-    uint16 * alg0_values;
+    uint8 * alg0_values;
 
-    uint16 * alg6_values;
+    uint8 * alg6_values;
 
     uint8 * alg2_values_8;
     uint8 * alg5_values_8;

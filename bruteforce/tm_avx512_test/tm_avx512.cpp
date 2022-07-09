@@ -11,8 +11,6 @@
 #include <immintrin.h> //AVX
 //#include <zmmintrin.h> //AVX512
 
-#include "data_sizes.h"
-
 static const __m512i sll_mask = _mm512_set1_epi8(0xFE);
 static const __m512i srl_mask = _mm512_set1_epi8(0x7F);
 
