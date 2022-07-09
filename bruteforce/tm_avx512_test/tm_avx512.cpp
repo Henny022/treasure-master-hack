@@ -38,7 +38,7 @@ void run_alg(int alg_id, int iterations, uint8 *working_code, uint8 *regular_rng
     {
         for (int j = 0; j < iterations; j++)
         {
-            auto *rng = (__m512i*)(alg0_values + ((*rng_seed) * 128 * 2));
+            auto *rng = (__m512i*)(alg0_values + ((*rng_seed) * 128));
 
             lo = _mm512_add_epi8(lo, lo);
             hi = _mm512_add_epi8(hi, hi);
@@ -52,7 +52,7 @@ void run_alg(int alg_id, int iterations, uint8 *working_code, uint8 *regular_rng
     {
         for (int j = 0; j < iterations; j++)
         {
-            auto *rng = (__m512i*)(regular_rng_values + ((*rng_seed) * 128 * 2));
+            auto *rng = (__m512i*)(regular_rng_values + ((*rng_seed) * 128));
 
             lo = _mm512_add_epi8(lo, rng[0]);
             hi = _mm512_add_epi8(hi, rng[1]);
@@ -64,7 +64,7 @@ void run_alg(int alg_id, int iterations, uint8 *working_code, uint8 *regular_rng
     {
         for (int j = 0; j < iterations; j++)
         {
-            auto *rng = (__m512i*)(alg2_values + ((*rng_seed) * 128 * 2));
+            auto *rng = (__m512i*)(alg2_values + ((*rng_seed) * 128));
 
             __m512i even_lo = _mm512_slli_epi16(lo & mask_even, 1) & mask_even;
             __m512i even_hi = _mm512_slli_epi16(hi & mask_even, 1) & mask_even;
@@ -90,7 +90,7 @@ void run_alg(int alg_id, int iterations, uint8 *working_code, uint8 *regular_rng
     {
         for (int j = 0; j < iterations; j++)
         {
-            auto *rng = (__m512i*)(regular_rng_values + ((*rng_seed) * 128 * 2));
+            auto *rng = (__m512i*)(regular_rng_values + ((*rng_seed) * 128));
 
             lo = lo ^ rng[0];
             hi = hi ^ rng[1];
@@ -102,7 +102,7 @@ void run_alg(int alg_id, int iterations, uint8 *working_code, uint8 *regular_rng
     {
         for (int j = 0; j < iterations; j++)
         {
-            auto *rng = (__m512i*)(regular_rng_values + ((*rng_seed) * 128 * 2));
+            auto *rng = (__m512i*)(regular_rng_values + ((*rng_seed) * 128));
 
             lo = _mm512_sub_epi8(lo, rng[0]);
             hi = _mm512_sub_epi8(hi, rng[1]);
@@ -114,7 +114,7 @@ void run_alg(int alg_id, int iterations, uint8 *working_code, uint8 *regular_rng
     {
         for (int j = 0; j < iterations; j++)
         {
-            auto *rng = (__m512i*)(alg5_values + ((*rng_seed) * 128 * 2));
+            auto *rng = (__m512i*)(alg5_values + ((*rng_seed) * 128));
 
             __m512i even_lo = _mm512_srli_epi16(lo & mask_even, 1) & mask_even;
             __m512i even_hi = _mm512_srli_epi16(hi & mask_even, 1) & mask_even;
@@ -140,7 +140,7 @@ void run_alg(int alg_id, int iterations, uint8 *working_code, uint8 *regular_rng
     {
         for (int j = 0; j < iterations; j++)
         {
-            auto *rng = (__m512i*)(alg6_values + ((*rng_seed) * 128 * 2));
+            auto *rng = (__m512i*)(alg6_values + ((*rng_seed) * 128));
 
             lo = _mm512_srli_epi16(lo, 1);
             lo = lo & srl_mask;
