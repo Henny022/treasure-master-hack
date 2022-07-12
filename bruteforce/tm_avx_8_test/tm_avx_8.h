@@ -1,20 +1,26 @@
 #ifndef TM_AVX_8_H
 #define TM_AVX_8_H
 
-#include "data_sizes.h"
+#include <cstdint>
 
-void alg0(uint8 * working_code, const uint8 * alg0_values, const uint16 rng_seed);
+void alg0(uint8_t *working_code, const uint8_t *alg0_values,
+          const uint16_t rng_seed);
 
-void alg1(uint8 * working_code, const uint8 * regular_rng_values_lo, const uint8 * regular_rng_values_hi, const uint16 rng_seed);
+void alg1(uint8_t *working_code, const uint8_t *regular_rng_values_lo,
+          const uint8_t *regular_rng_values_hi, const uint16_t rng_seed);
 
-void alg2(uint8 * working_code, const uint8 * alg2_values, const uint16 rng_seed);
+void alg2(uint8_t *working_code, const uint8_t *alg2_values,
+          const uint16_t rng_seed);
 
-void alg3(uint8 * working_code, const uint8 * regular_rng_values, const uint16 rng_seed);
+void alg3(uint8_t *working_code, const uint8_t *regular_rng_values,
+          const uint16_t rng_seed);
 
-void alg5(uint8 * working_code, const uint8 * alg5_values, const uint16 rng_seed);
+void alg5(uint8_t *working_code, const uint8_t *alg5_values,
+          const uint16_t rng_seed);
 
-void alg6(uint8 * working_code, const uint8 * alg6_values, const uint16 rng_seed);
+void alg6(uint8_t *working_code, const uint8_t *alg6_values,
+          const uint16_t rng_seed);
 
-void alg7(uint8 * working_code);
+void alg7(uint8_t *working_code);
 
-#endif //TM_AVX_8_H
+#endif // TM_AVX_8_H

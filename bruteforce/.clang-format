@@ -1,0 +1,16 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+IndentWidth: 4
+BreakBeforeBraces: Allman
+AllowShortBlocksOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: Empty
+IncludeBlocks: Merge
+IncludeCategories:
+  - Regex: '^<.*>$'
+    Priority: 1
+  - Regex: '^<.*\.h>$'
+    Priority: 2
+  - Regex: '^".*\.h"$'
+    Priority: 3
+...

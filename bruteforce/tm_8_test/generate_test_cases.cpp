@@ -24,7 +24,6 @@ int main()
         return 1;
     }
 
-
     for (int i = 0; i < 10000; ++i)
     {
         for (int alg = 0; alg < 8; ++alg)
@@ -49,4 +48,3 @@ int main()
         }
     }
 }
-

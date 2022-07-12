@@ -1,5 +1,5 @@
-#include "tm_avx2_test.h"
 #include "tester.h"
+#include "tm_avx2_test.h"
 
 int main(int argc, char *argv[])
 {
