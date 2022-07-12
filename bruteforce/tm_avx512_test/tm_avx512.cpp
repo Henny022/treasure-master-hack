@@ -64,21 +64,21 @@ void run_alg(int alg_id, int iterations, uint8 *working_code, uint8 *regular_rng
     {
         for (int j = 0; j < iterations; j++)
         {
-            auto *rng = (__m512i*)(alg2_values + ((*rng_seed) * 128));
+            auto *rng = (__m512i*)(alg2_values + ((*rng_seed) * 64));
 
-            __m512i even_lo = _mm512_slli_epi16(lo & mask_even, 1) & mask_even;
-            __m512i even_hi = _mm512_slli_epi16(hi & mask_even, 1) & mask_even;
-            __m512i odd_lo = _mm512_srli_epi16(lo & mask_odd, 1) & mask_odd;
-            __m512i odd_hi = _mm512_srli_epi16(hi & mask_odd, 1) & mask_odd;
+            __m512i even_lo = _mm512_srli_epi16(lo & mask_even, 1) & mask_even;
+            __m512i even_hi = _mm512_srli_epi16(hi & mask_even, 1) & mask_even;
+            __m512i odd_lo = _mm512_slli_epi16(lo & mask_odd, 1) & mask_odd;
+            __m512i odd_hi = _mm512_slli_epi16(hi & mask_odd, 1) & mask_odd;
 
             __m512i carry_lo = _mm512_permutex2var_epi8(lo, carry_permutation, hi);
             __m512i carry_hi = _mm512_permutex2var_epi8(hi, carry_permutation, *rng);
 
-            even_lo = even_lo | (carry_lo & carry_mask_l);
-            even_hi = even_hi | (carry_hi & carry_mask_l);
+            even_lo = even_lo | (carry_lo & carry_mask_r & mask_even);
+            even_hi = even_hi | (carry_hi & carry_mask_r & mask_even);
 
-            odd_lo = odd_lo | (carry_lo & carry_mask_r);
-            odd_hi = odd_hi | (carry_hi & carry_mask_r);
+            odd_lo = odd_lo | (carry_lo & carry_mask_l & mask_odd);
+            odd_hi = odd_hi | (carry_hi & carry_mask_l & mask_odd);
 
             lo = even_lo | odd_lo;
             hi = even_hi | odd_hi;
@@ -114,21 +114,21 @@ void run_alg(int alg_id, int iterations, uint8 *working_code, uint8 *regular_rng
     {
         for (int j = 0; j < iterations; j++)
         {
-            auto *rng = (__m512i*)(alg5_values + ((*rng_seed) * 128));
+            auto *rng = (__m512i*)(alg5_values + ((*rng_seed) * 64));
 
-            __m512i even_lo = _mm512_srli_epi16(lo & mask_even, 1) & mask_even;
-            __m512i even_hi = _mm512_srli_epi16(hi & mask_even, 1) & mask_even;
-            __m512i odd_lo = _mm512_slli_epi16(lo & mask_odd, 1) & mask_odd;
-            __m512i odd_hi = _mm512_slli_epi16(hi & mask_odd, 1) & mask_odd;
+            __m512i even_lo = _mm512_slli_epi16(lo & mask_even, 1) & mask_even;
+            __m512i even_hi = _mm512_slli_epi16(hi & mask_even, 1) & mask_even;
+            __m512i odd_lo = _mm512_srli_epi16(lo & mask_odd, 1) & mask_odd;
+            __m512i odd_hi = _mm512_srli_epi16(hi & mask_odd, 1) & mask_odd;
 
             __m512i carry_lo = _mm512_permutex2var_epi8(lo, carry_permutation, hi);
             __m512i carry_hi = _mm512_permutex2var_epi8(hi, carry_permutation, *rng);
 
-            even_lo = even_lo | (carry_lo & carry_mask_r);
-            even_hi = even_hi | (carry_hi & carry_mask_r);
+            even_lo = even_lo | (carry_lo & carry_mask_l & mask_even);
+            even_hi = even_hi | (carry_hi & carry_mask_l & mask_even);
 
-            odd_lo = odd_lo | (carry_lo & carry_mask_l);
-            odd_hi = odd_hi | (carry_hi & carry_mask_l);
+            odd_lo = odd_lo | (carry_lo & carry_mask_r & mask_odd);
+            odd_hi = odd_hi | (carry_hi & carry_mask_r & mask_odd);
 
             lo = even_lo | odd_lo;
             hi = even_hi | odd_hi;

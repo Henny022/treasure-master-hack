@@ -10,19 +10,19 @@ tm_avx512_intrinsics_test::tm_avx512_intrinsics_test()
     generate_rng_table(this->rng_table);
 
 
-    regular_rng_values = (uint8*)aligned_malloc(0x10000 * 128 * 2, 64); // new uint16[0x10000 * 128];
+    regular_rng_values = (uint8*)aligned_malloc(0x10000 * 128, 64); // new uint16[0x10000 * 128];
     generate_regular_rng_values_8(regular_rng_values, rng_table);
 
-    alg0_values = (uint8*)aligned_malloc(0x10000 * 128 * 2, 64); //new uint16[0x10000 * 128];
+    alg0_values = (uint8*)aligned_malloc(0x10000 * 128, 64); //new uint16[0x10000 * 128];
     generate_alg0_values_8(alg0_values, rng_table);
 
-    alg6_values = (uint8*)aligned_malloc(0x10000 * 128 * 2, 64); //new uint16[0x10000 * 128];
+    alg6_values = (uint8*)aligned_malloc(0x10000 * 128, 64); //new uint16[0x10000 * 128];
     generate_alg6_values_8(alg6_values, rng_table);
 
-    alg2_values_8 = (uint8*)aligned_malloc(0x10000 * 512, 64); //new uint64[0x10000 * 128];
+    alg2_values_8 = (uint8*)aligned_malloc(0x10000 * 64, 64); //new uint64[0x10000 * 128];
     generate_alg2_values_512_8(alg2_values_8, rng_table);
 
-    alg5_values_8 = (uint8*)aligned_malloc(0x10000 * 512, 64); //new uint64[0x10000 * 128];
+    alg5_values_8 = (uint8*)aligned_malloc(0x10000 * 64, 64); //new uint64[0x10000 * 128];
     generate_alg5_values_512_8(alg5_values_8, rng_table);
 
     rng_seed_forward_1 = new uint16[256*256];

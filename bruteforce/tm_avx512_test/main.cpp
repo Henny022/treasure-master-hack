@@ -1,7 +1,7 @@
 #include "tm_avx512_test.h"
 #include "tester.h"
 
-int main(int argc, char*argv[])
+int main(int argc, char *argv[])
 {
     if (argc <= 1)
     {
@@ -11,6 +11,6 @@ int main(int argc, char*argv[])
     tm_avx512_intrinsics_test tester;
     run_validity_tests<tm_avx512_intrinsics_test>(tester);
 
-    int n = std::strtol(argv[0], nullptr, 10);
+    int n = std::strtol(argv[1], nullptr, 10);
     run_speed_tests<tm_avx512_intrinsics_test>(tester, n);
 }

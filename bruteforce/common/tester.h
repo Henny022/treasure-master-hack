@@ -12,8 +12,8 @@ void run_validity_tests(T tester)
 
 	FILE * pFile;
 
-	pFile = fopen ("../common/TM_test_cases_OUT.txt","r+");
-	if (pFile == NULL)
+	pFile = fopen ("TM_test_cases_OUT.txt","r+");
+	if (pFile == nullptr)
 	{
 		printf("File error\n");
 		return;
