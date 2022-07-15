@@ -3,6 +3,7 @@
 
 #include <array>
 #include <cstdint>
+#include <immintrin.h>
 
 using rng_table_t = std::array<uint16_t, 0x10000>;
 
@@ -165,16 +166,16 @@ struct rng_tables_t
     rng_forward_table_t forward_128;
 };
 
-static inline rng_tables_t generate_rng_tables()
+static inline rng_tables_t *generate_rng_tables()
 {
-    rng_tables_t rng_tables;
-    rng_tables.rng_table = generate_rng_table();
-    rng_tables.regular = generate_regular_rng_values(rng_tables.rng_table);
-    rng_tables.alg0 = generate_alg0_values(rng_tables.rng_table);
-    rng_tables.alg6 = generate_alg6_values(rng_tables.rng_table);
-    rng_tables.alg2 = generate_alg2_values(rng_tables.rng_table);
-    rng_tables.alg5 = generate_alg5_values(rng_tables.rng_table);
-    rng_tables.forward_128 = generate_seed_forward_128(rng_tables.rng_table);
+    auto *rng_tables = new rng_tables_t;
+    rng_tables->rng_table = generate_rng_table();
+    rng_tables->regular = generate_regular_rng_values(rng_tables->rng_table);
+    rng_tables->alg0 = generate_alg0_values(rng_tables->rng_table);
+    rng_tables->alg6 = generate_alg6_values(rng_tables->rng_table);
+    rng_tables->alg2 = generate_alg2_values(rng_tables->rng_table);
+    rng_tables->alg5 = generate_alg5_values(rng_tables->rng_table);
+    rng_tables->forward_128 = generate_seed_forward_128(rng_tables->rng_table);
     return rng_tables;
 }
 

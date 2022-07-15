@@ -189,5 +189,5 @@ int main()
 {
     auto rng_tables = generate_rng_tables();
     uint8_t IV[8]{0x2C, 0xA5, 0xB4, 0x2D, 0x00};
-    run(IV, rng_tables);
+    run(IV, *rng_tables);
 }
