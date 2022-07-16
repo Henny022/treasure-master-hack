@@ -274,6 +274,8 @@ machine_code_properties check_machine_code(const uint8_t *memory, int length)
 
 void output_stats(const uint8_t in_progress[128], const uint8_t IV[8])
 {
+    char output[123 + 20]; // 20 extra byte in case I misscounted
+    output[0] = ',';
     uint8_t *decrypted_memory =
         decrypt_memory(in_progress, carnival_code, carnival_code_length);
     bool carnival_world_passed = false;
@@ -282,25 +284,32 @@ void output_stats(const uint8_t in_progress[128], const uint8_t IV[8])
     if (verify_checksum(decrypted_memory, carnival_code_length))
     {
         carnival_world_passed = true;
-        printf("%02X%02X%02X%02X%02X%02X%02X%02X\t", IV[0], IV[1], IV[2], IV[3],
-               IV[4], IV[5], IV[6], IV[7]);
+        sprintf(output + 1, "%02X%02X%02X%02X%02X%02X%02X%02X,", IV[0], IV[1],
+                IV[2], IV[3], IV[4], IV[5], IV[6], IV[7]);
 
-        printf("car\t");
+        sprintf(output + 18, "car,");
 
         if (compare_working_code(in_progress, carnival_world_working_code))
         {
-            printf("wcm");
+            sprintf(output + 22, "wcm  ,");
         }
-        printf("\t");
+        else
+        {
+            sprintf(output + 22, "     ,");
+        }
 
         if (compare_working_code(decrypted_memory,
                                  carnival_code_decrypted_machine_code))
         {
-            printf("mcm");
+            sprintf(output + 28, "mcm  ,");
         }
-        printf("\t");
+        else
+        {
+            sprintf(output + 28, "     ,");
+        }
 
-        output_machine_code_stats(decrypted_memory, carnival_code_length);
+        output_machine_code_stats(decrypted_memory, carnival_code_length,
+                                  output + 34);
     }
     delete[] decrypted_memory;
 
@@ -312,64 +321,89 @@ void output_stats(const uint8_t in_progress[128], const uint8_t IV[8])
 
         if (!carnival_world_passed)
         {
-            printf("%02X%02X%02X%02X%02X%02X%02X%02X\t\t\t\t\t\t\t\t\t\t\t",
-                   IV[0], IV[1], IV[2], IV[3], IV[4], IV[5], IV[6], IV[7]);
+            sprintf(output + 1,
+                    "%02X%02X%02X%02X%02X%02X%02X%02X                          "
+                    "                                  ",
+                    IV[0], IV[1], IV[2], IV[3], IV[4], IV[5], IV[6], IV[7]);
         }
-        printf("oth");
+        sprintf(output + 76, "oth,");
 
-        output_machine_code_stats(decrypted_memory, other_world_code_length);
+        output_machine_code_stats(decrypted_memory, other_world_code_length,
+                                  output + 80);
     }
     delete[] decrypted_memory;
 
     if (carnival_world_passed || other_world_passed)
     {
-        printf("\n");
+        printf("%s\n", output);
     }
 }
 
-void output_machine_code_stats(const uint8_t *decrypted_memory, int length)
+void output_machine_code_stats(const uint8_t *decrypted_memory, int length,
+                               char *output)
 {
     machine_code_properties machine_code_stats =
         check_machine_code(decrypted_memory, length);
     if (machine_code_stats.all_bytes_valid)
     {
-        printf("ABV!");
+        sprintf(output, "ABV! ,");
     }
-    printf("\t");
+    else
+    {
+        sprintf(output, "     ,");
+    }
 
     if (machine_code_stats.first_bytes_to_jump_valid)
     {
-        printf("TJ");
+        sprintf(output + 6, "TJ   ,");
     }
-    printf("\t");
+    else
+    {
+        sprintf(output + 6, "     ,");
+    }
 
     if (machine_code_stats.first_byte_is_valid)
     {
-        printf("FB");
+        sprintf(output + 12, "FB   ,");
     }
-    printf("\t");
+    else
+    {
+        sprintf(output + 12, "     ,");
+    }
 
     if (machine_code_stats.uses_illegal_opcodes)
     {
-        printf("ILL");
+        sprintf(output + 18, "ILL  ,");
     }
-    printf("\t");
+    else
+    {
+        sprintf(output + 18, "     ,");
+    }
 
     if (machine_code_stats.uses_jam)
     {
-        printf("JAM");
+        sprintf(output + 24, "JAM  ,");
     }
-    printf("\t");
+    else
+    {
+        sprintf(output + 24, "     ,");
+    }
 
     if (machine_code_stats.uses_nop)
     {
-        printf("NOP");
+        sprintf(output + 30, "NOP  ,");
     }
-    printf("\t");
+    else
+    {
+        sprintf(output + 30, "     ,");
+    }
 
     if (machine_code_stats.uses_unofficial_nops)
     {
-        printf("NP2");
+        sprintf(output + 36, "NP2  ,");
     }
-    printf("\t");
+    else
+    {
+        sprintf(output + 36, "     ,");
+    }
 }

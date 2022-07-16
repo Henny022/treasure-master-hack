@@ -205,10 +205,10 @@ void worker(int rank)
         if (message == -1)
             break;
 
-        printf("starting byte %2x", message);
+        printf("starting byte %2x\n", message);
         uint8_t IV[8]{0x2C, 0xA5, 0xB4, 0x2D, static_cast<uint8_t>(message)};
         run(IV, *rng_tables);
-        printf("finished byte %2x", message);
+        printf("finished byte %2x\n", message);
     }
     printf("done\n");
 }

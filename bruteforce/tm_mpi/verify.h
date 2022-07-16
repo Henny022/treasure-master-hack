@@ -50,6 +50,7 @@ struct machine_code_properties
 machine_code_properties check_machine_code(const uint8_t *memory, int length);
 
 void output_stats(const uint8_t in_progress[128], const uint8_t IV[8]);
-void output_machine_code_stats(const uint8_t *decrypted_memory, int length);
+void output_machine_code_stats(const uint8_t *decrypted_memory, int length,
+                               char *output);
 
 #endif // VERIFY_H
