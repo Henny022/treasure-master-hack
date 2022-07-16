@@ -193,7 +193,7 @@ void run(const uint8_t IV[8], const rng_tables_t &rng_tables)
     }
 }
 
-void worker()
+void worker(int rank)
 {
     auto rng_tables = generate_rng_tables();
     while (true)
@@ -204,21 +204,26 @@ void worker()
         if (message == -1)
             break;
 
+        printf("starting byte %2x", message);
         uint8_t IV[8]{0x2C, 0xA5, 0xB4, 0x2D, static_cast<uint8_t>(message)};
         run(IV, *rng_tables);
+        printf("finished byte %2x", message);
     }
+    printf("done\n");
 }
 
 void supervisor(int workers)
 {
     int message;
     MPI_Status stat;
+    printf("starting with %d workers\n", workers);
     for (int i = 0; i < 256; ++i)
     {
         MPI_Recv(&message, 1, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG,
                  MPI_COMM_WORLD, &stat);
         MPI_Send(&i, 1, MPI_INT, stat.MPI_SOURCE, 0, MPI_COMM_WORLD);
     }
+    printf("all done\n");
     int stop = -1;
     while (workers != 0)
     {
@@ -243,7 +248,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        worker();
+        worker(world_rank);
     }
 
     MPI_Finalize();
