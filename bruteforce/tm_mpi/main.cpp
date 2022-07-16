@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <mpi.h>
 #include "implementation.h"
 #include "rng.h"
 #include "schedule.h"
@@ -168,7 +169,7 @@ void run(const uint8_t IV[8], const rng_tables_t &rng_tables)
 {
     auto schedule_entries = generate_schedule(IV);
 
-    for (int byte4 = 0; byte4 < 256; ++byte4)
+    for (int byte4 = 0; byte4 < 1; ++byte4)
     {
         for (int byte5 = 0; byte5 < 256; ++byte5)
         {
@@ -177,11 +178,11 @@ void run(const uint8_t IV[8], const rng_tables_t &rng_tables)
                 for (int byte7 = 0; byte7 < 256; ++byte7)
                 {
                     uint8_t local_IV[8];
-                    for (int i = 0; i < 4; ++i)
+                    for (int i = 0; i < 5; ++i)
                     {
                         local_IV[i] = IV[i];
                     }
-                    local_IV[4] = byte4;
+                    // local_IV[4] = byte4;
                     local_IV[5] = byte5;
                     local_IV[6] = byte6;
                     local_IV[7] = byte7;
@@ -192,9 +193,58 @@ void run(const uint8_t IV[8], const rng_tables_t &rng_tables)
     }
 }
 
-int main()
+void worker()
 {
     auto rng_tables = generate_rng_tables();
-    uint8_t IV[8]{0x2C, 0xA5, 0xB4, 0x2D};
-    run(IV, *rng_tables);
+    while (true)
+    {
+        int message = 0;
+        MPI_Send(&message, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+        MPI_Recv(&message, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, nullptr);
+        if (message == -1)
+            break;
+
+        uint8_t IV[8]{0x2C, 0xA5, 0xB4, 0x2D, static_cast<uint8_t>(message)};
+        run(IV, *rng_tables);
+    }
+}
+
+void supervisor(int workers)
+{
+    int message;
+    MPI_Status stat;
+    for (int i = 0; i < 256; ++i)
+    {
+        MPI_Recv(&message, 1, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG,
+                 MPI_COMM_WORLD, &stat);
+        MPI_Send(&i, 1, MPI_INT, stat.MPI_SOURCE, 0, MPI_COMM_WORLD);
+    }
+    int stop = -1;
+    while (workers != 0)
+    {
+        MPI_Recv(&message, 1, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG,
+                 MPI_COMM_WORLD, &stat);
+        MPI_Send(&stop, 1, MPI_INT, stat.MPI_SOURCE, 0, MPI_COMM_WORLD);
+        --workers;
+    }
+}
+
+int main(int argc, char *argv[])
+{
+    MPI_Init(&argc, &argv);
+    int world_size;
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+    int world_rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+
+    if (world_rank == 0)
+    {
+        supervisor(world_size - 1);
+    }
+    else
+    {
+        worker();
+    }
+
+    MPI_Finalize();
 }
