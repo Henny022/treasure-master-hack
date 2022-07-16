@@ -198,9 +198,10 @@ void worker(int rank)
     auto rng_tables = generate_rng_tables();
     while (true)
     {
+        MPI_Status stat;
         int message = 0;
         MPI_Send(&message, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-        MPI_Recv(&message, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, nullptr);
+        MPI_Recv(&message, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &stat);
         if (message == -1)
             break;
 
