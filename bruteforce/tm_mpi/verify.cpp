@@ -126,45 +126,6 @@ uint8_t *decrypt_memory(const uint8_t working_code[128],
     return decrypted_memory;
 }
 
-/* example:
-
-        uint8_t fake_block[0x80];
-        for (int i = 0; i < 128; i++)
-        {
-                fake_block[i] = 0x60;
-        }
-
-        fake_block[0] = 0xA9;
-        fake_block[1] = 0x96;
-        fake_block[2] = 0x85;
-        fake_block[3] = 0xAF;
-
-        uint8_t * encrypted_memory = encrypt_memory(fake_block,
-   other_world_code, other_world_code_length); for (int i = 0; i < 128; i++)
-        {
-                printf("%02X ",encrypted_memory[i]);
-        }
-        printf("\n\n");
-
-        uint8_t swapped[0x80];
-        for (int i = 0; i < 128; i++)
-        {
-                swapped[i] = encrypted_memory[127-i];
-        }
-
-        uint8_t * decrypted_memory2 = decrypt_memory(swapped, other_world_code,
-   other_world_code_length); for (int i = 0; i < 128; i++)
-        {
-                printf("%02X ",decrypted_memory2[i]);
-        }
-        printf("\n");
-
-        if (verify_checksum(decrypted_memory2,other_world_code_length))
-        {
-                printf("PASS\n");
-        }
-*/
-
 uint8_t *encrypt_memory(const uint8_t *block, const uint8_t *xor_block,
                         int length)
 {

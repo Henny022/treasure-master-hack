@@ -199,18 +199,19 @@ void worker(int rank)
     while (true)
     {
         MPI_Status stat;
-        int message = 0;
-        MPI_Send(&message, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-        MPI_Recv(&message, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &stat);
-        if (message == -1)
+        int bytes[2]{};
+        MPI_Send(&bytes, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+        MPI_Recv(&bytes, 2, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &stat);
+        if (bytes[0] == -1)
             break;
 
-        printf("starting byte %2x\n", message);
-        uint8_t IV[8]{0x2C, 0xA5, 0xB4, 0x2D, static_cast<uint8_t>(message)};
+        // printf("starting byte %2x\n", message);
+        uint8_t IV[8]{0x2C, 0xA5, 0xB4, static_cast<uint8_t>(bytes[0]),
+                      static_cast<uint8_t>(bytes[1])};
         run(IV, *rng_tables);
-        printf("finished byte %2x\n", message);
+        // printf("finished byte %2x\n", message);
     }
-    printf("done\n");
+    // printf("done\n");
 }
 
 void supervisor(int workers)
@@ -218,11 +219,15 @@ void supervisor(int workers)
     int message;
     MPI_Status stat;
     printf("starting with %d workers\n", workers);
-    for (int i = 0; i < 256; ++i)
+    for (int byte3 = 0; byte3 < 256; ++byte3)
     {
-        MPI_Recv(&message, 1, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG,
-                 MPI_COMM_WORLD, &stat);
-        MPI_Send(&i, 1, MPI_INT, stat.MPI_SOURCE, 0, MPI_COMM_WORLD);
+        for (int byte4 = 0; byte4 < 256; ++byte4)
+        {
+            int bytes[2]{byte3, byte4};
+            MPI_Recv(&message, 1, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG,
+                     MPI_COMM_WORLD, &stat);
+            MPI_Send(bytes, 2, MPI_INT, stat.MPI_SOURCE, 0, MPI_COMM_WORLD);
+        }
     }
     printf("all done\n");
     int stop = -1;
