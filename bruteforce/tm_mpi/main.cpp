@@ -2,6 +2,7 @@
 #include "implementation.h"
 #include "rng.h"
 #include "schedule.h"
+#include "verify.h"
 
 union working_code_t
 {
@@ -51,7 +52,7 @@ void run_once(const uint8_t IV[8],
             switch (algorithm)
             {
             case 0:
-                working_code.zmm[0] = _mm512_add_epi8(lo, lo);
+                lo = _mm512_add_epi8(lo, lo);
                 hi = _mm512_add_epi8(hi, hi);
                 lo = lo | rng_tables.alg0[rng_seed][0];
                 hi = hi | rng_tables.alg0[rng_seed][1];
@@ -154,22 +155,23 @@ void run_once(const uint8_t IV[8],
     {
         return;
     }
-    printf("good sum 1: %2x %2x %2x %2x %2x %2x %2x %2x", IV[0], IV[1], IV[2],
-           IV[3], IV[4], IV[5], IV[6], IV[7]);
+    //printf("good sum 1: %2x %2x %2x %2x %2x %2x %2x %2x\n", IV[0], IV[1], IV[2],
+    //       IV[3], IV[4], IV[5], IV[6], IV[7]);
     // decrypt
     // checksum code
     // heuristics
+    output_stats(working_code.u8, IV);
 }
 
 void run(const uint8_t IV[8], const rng_tables_t &rng_tables)
 {
     auto schedule_entries = generate_schedule(IV);
 
-    for (int byte7 = 0; byte7 < 256; ++byte7)
+    for (int byte5 = 0; byte5 < 256; ++byte5)
     {
         for (int byte6 = 0; byte6 < 256; ++byte6)
         {
-            for (int byte5 = 0; byte5 < 256; ++byte5)
+            for (int byte7 = 0; byte7 < 256; ++byte7)
             {
                 uint8_t local_IV[8];
                 for (int i = 0; i < 5; ++i)
