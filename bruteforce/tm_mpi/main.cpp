@@ -155,11 +155,12 @@ void run_once(const uint8_t IV[8],
     {
         return;
     }
-    //printf("good sum 1: %2x %2x %2x %2x %2x %2x %2x %2x\n", IV[0], IV[1], IV[2],
-    //       IV[3], IV[4], IV[5], IV[6], IV[7]);
-    // decrypt
-    // checksum code
-    // heuristics
+    // printf("good sum 1: %2x %2x %2x %2x %2x %2x %2x %2x\n", IV[0], IV[1],
+    // IV[2],
+    //        IV[3], IV[4], IV[5], IV[6], IV[7]);
+    //  decrypt
+    //  checksum code
+    //  heuristics
     output_stats(working_code.u8, IV);
 }
 
@@ -167,21 +168,25 @@ void run(const uint8_t IV[8], const rng_tables_t &rng_tables)
 {
     auto schedule_entries = generate_schedule(IV);
 
-    for (int byte5 = 0; byte5 < 256; ++byte5)
+    for (int byte4 = 0; byte4 < 256; ++byte4)
     {
-        for (int byte6 = 0; byte6 < 256; ++byte6)
+        for (int byte5 = 0; byte5 < 256; ++byte5)
         {
-            for (int byte7 = 0; byte7 < 256; ++byte7)
+            for (int byte6 = 0; byte6 < 256; ++byte6)
             {
-                uint8_t local_IV[8];
-                for (int i = 0; i < 5; ++i)
+                for (int byte7 = 0; byte7 < 256; ++byte7)
                 {
-                    local_IV[i] = IV[i];
+                    uint8_t local_IV[8];
+                    for (int i = 0; i < 4; ++i)
+                    {
+                        local_IV[i] = IV[i];
+                    }
+                    local_IV[4] = byte4;
+                    local_IV[5] = byte5;
+                    local_IV[6] = byte6;
+                    local_IV[7] = byte7;
+                    run_once(local_IV, schedule_entries, rng_tables);
                 }
-                local_IV[5] = byte5;
-                local_IV[6] = byte6;
-                local_IV[7] = byte7;
-                run_once(local_IV, schedule_entries, rng_tables);
             }
         }
     }
@@ -190,6 +195,6 @@ void run(const uint8_t IV[8], const rng_tables_t &rng_tables)
 int main()
 {
     auto rng_tables = generate_rng_tables();
-    uint8_t IV[8]{0x2C, 0xA5, 0xB4, 0x2D, 0x00};
+    uint8_t IV[8]{0x2C, 0xA5, 0xB4, 0x2D};
     run(IV, *rng_tables);
 }
